@@ -59,10 +59,33 @@ def main():
             lead_in=(1, 2, 2, 3),
             loop=(2, 1, 2, 3),
             lead_out=(2, 2, 1))
+    d = Row(LENGTH,
+            start_down=True,
+            lead_in=(2, 2, 2, 1),
+            loop=(2, 3, 2, 1),
+            lead_out=(2, 2, 2))
+    e = Row(LENGTH,
+            start_down=True,
+            lead_in=(1, 2, 2),
+            loop=(3, 2, 2, 1),
+            lead_out=(2, 2, 2))
+    f = Row(LENGTH,
+            start_down=False,
+            lead_in=(2, 2, 2),
+            loop=(1, 2, 2, 3))
+    g = Row(LENGTH,
+            start_down=False,
+            lead_in=(2, 2, 2, 1),
+            loop=(3, 2, 2, 1),
+            lead_out=(2, 2, 2))
+    h = Row(LENGTH,
+            start_down=True,
+            loop=(1, 2, 2, 3),
+            lead_out=(2, 2, 1))
 
-    print(a)
-    print(b)
-    print(c)
+    rows = (a, b, c, d, h, g, f, e, d, c, b, a)
+
+    print("\n".join(map(str, rows)))
 
 if __name__ == "__main__":
     main()
