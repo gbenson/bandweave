@@ -1,5 +1,6 @@
 from pyweaving import Color, Draft
 from pyweaving.render import ImageRenderer
+from pyweaving.wif import WIFWriter
 
 class RowFullError(Exception):
     pass
@@ -127,6 +128,9 @@ def main():
             if column[row_id]:
                 row_shafts.add(draft.shafts[shafts[column]])
         draft.add_weft_thread(color=WASABI, shafts=row_shafts)
+
+    # Write the WIF
+    WIFWriter(draft).write("out.wif")
 
     # Render the image
     img = ImageRenderer(draft)
