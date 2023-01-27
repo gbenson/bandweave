@@ -1,4 +1,6 @@
+import io
 import sys
+from PIL import Image
 from pypdf import PdfReader
 
 def dump_images(pdf_filename):
@@ -13,8 +15,13 @@ def dump_images(pdf_filename):
             with open(img_filename, "wb") as fp:
                 fp.write(img_fp.data)
 
-def process(pdf_filename):
-    dump_images(pdf_filename)
+class Band:
+    def __init__(self, filename, pagenum, imgnum=0, rotate=0):
+        pdf = PdfReader(filename)
+        pdfimg = pdf.pages[pagenum].images[imgnum]
+        img = Image.open(io.BytesIO(pdfimg.data))
+        if rotate != 0:
+            img = img.rotate(rotate, expand=True)
 
 def main():
     for pdf_filename in sys.argv[1:]:
