@@ -84,8 +84,12 @@ def main():
             lead_out=(2, 2, 1))
 
     rows = (a, b, c, d, h, g, f, e, d, c, b, a)
-
     print("\n".join(map(str, rows)))
+
+    cols = tuple(zip(*(row.threads for row in rows)))
+    print("\n".join(("".join(is_down and "X" or "•"
+                             for is_down in col))
+                    for col in cols))
 
 if __name__ == "__main__":
     main()
