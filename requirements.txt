@@ -1,3 +1,4 @@
 Pillow
 pypdf
 pypdf[image]
+pyweaving

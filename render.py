@@ -1,3 +1,6 @@
+from pyweaving import Color, Draft
+from pyweaving.render import ImageRenderer
+
 class RowFullError(Exception):
     pass
 
@@ -47,8 +50,19 @@ class Row:
                        for is_down in reversed(self.threads))
 
 def main():
-    LENGTH = 37
+    BLACK = Color((0, 0, 0))    # Black (105)
+    TEAL = Color((7,82, 117))   # Dark Teal (147)
+    BLUE = Color((7, 81, 155))  # Royal Blue (148)
+    WASABI = Color((194, 214, 164))  # Wasabi (144)
 
+    COLORS = [BLACK]*6 + [TEAL]*15 + [BLUE, TEAL]*8 + [BLUE]*17
+    COLORS = tuple(COLORS) + tuple(reversed(COLORS))  # Mirror
+    COLORS = COLORS[1:-1]  # Lose selvedges
+
+    SCALE = 2
+    LENGTH = len(COLORS) // SCALE
+
+    # Build the pattern row-by-row (weft-by-weft)
     a = Row(LENGTH, start_down=True, loop=(2, 1, 2, 3))
     b = Row(LENGTH,
             start_down=False,
@@ -86,10 +100,38 @@ def main():
     rows = (a, b, c, d, h, g, f, e, d, c, b, a)
     print("\n".join(map(str, rows)))
 
-    cols = tuple(zip(*(row.threads for row in rows)))
+    # "Turn" the draft to access it column-by-column (warp-by-warp)
+    cols = tuple(reversed(list(zip(*(row.threads for row in rows)))))
     print("\n".join(("".join(is_down and "X" or "•"
                              for is_down in col))
                     for col in cols))
+
+    # Count the shafts
+    shafts = {}
+    for column in cols:
+        if column not in shafts:
+            shafts[column] = len(shafts)
+
+    # Create the draft
+    draft = Draft(num_shafts=len(shafts))
+
+    for column in cols:
+        shaft = draft.shafts[shafts[column]]
+        for __ in range(SCALE):
+            color = COLORS[len(draft.warp)]
+            draft.add_warp_thread(color=color, shaft=shaft)
+
+    for row_id in range(len(rows)):
+        row_shafts = set()
+        for column in cols:
+            if column[row_id]:
+                row_shafts.add(draft.shafts[shafts[column]])
+        draft.add_weft_thread(color=WASABI, shafts=row_shafts)
+
+    # Render the image
+    img = ImageRenderer(draft)
+    img.save("out.png")
+    img.show()
 
 if __name__ == "__main__":
     main()
