@@ -102,21 +102,21 @@ def main():
     print("\n".join(map(str, rows)))
 
     # "Turn" the draft to access it column-by-column (warp-by-warp)
-    cols = tuple(reversed(list(zip(*(row.threads for row in rows)))))
+    columns = tuple(reversed(list(zip(*(row.threads for row in rows)))))
     print("\n".join(("".join(is_down and "X" or "•"
-                             for is_down in col))
-                    for col in cols))
+                             for is_down in column))
+                    for column in columns))
 
     # Count the shafts
     shafts = {}
-    for column in cols:
+    for column in columns:
         if column not in shafts:
             shafts[column] = len(shafts)
 
     # Create the draft
     draft = Draft(num_shafts=len(shafts))
 
-    for column in cols:
+    for column in columns:
         shaft = draft.shafts[shafts[column]]
         for __ in range(SCALE):
             color = COLORS[len(draft.warp)]
@@ -124,7 +124,7 @@ def main():
 
     for row_id in range(len(rows)):
         row_shafts = set()
-        for column in cols:
+        for column in columns:
             if column[row_id]:
                 row_shafts.add(draft.shafts[shafts[column]])
         draft.add_weft_thread(color=WASABI, shafts=row_shafts)
